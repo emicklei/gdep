@@ -115,9 +115,9 @@ func deps(vw string) []string {
 
 func tokenize(t string) (string, string, string) {
 	uncolon := strings.ReplaceAll(t, ":", ",")
-	parts := strings.Split(t, uncolon)
+	parts := strings.Split(uncolon, ",")
 	if len(parts) != 3 {
-		log.Fatal("not fqdtn", t)
+		log.Fatal("failed to parse a full qualified table|view name, expected PROJECT(.|:)DATASET.VIEW:", t)
 	}
 	return parts[0], parts[1], parts[2]
 }
