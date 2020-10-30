@@ -3,7 +3,9 @@ package bigquery
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"os"
 	"regexp"
 	"strings"
 
@@ -21,8 +23,11 @@ func ExportViewDepencyGraph(c *cli.Context) error {
 			return err
 		}
 	}
-	fmt.Println(g.String())
-	return nil
+	out := "bigquery.dot"
+	if o := c.String("o"); len(o) > 0 {
+		out = o
+	}
+	return ioutil.WriteFile(out, []byte(g.String()), os.ModePerm)
 }
 
 func addDependencies(project string, dataset string, table string, root *dot.Graph, visited map[string]bool) error {
@@ -67,7 +72,7 @@ func ensureTableNode(root *dot.Graph, project string, dataset string, table stri
 		dg := pg.Subgraph(dataset)
 		n := dg.Node(table)
 		// modify label
-		n.Label(table[0:len(table)/2] + "\n" + table[len(table)/2:])
+		n.Label(wrap(table))
 		return n, true
 	}
 	dg, ok := pg.FindSubgraph(dataset)
@@ -76,17 +81,24 @@ func ensureTableNode(root *dot.Graph, project string, dataset string, table stri
 		dg.Label(dataset)
 		n := dg.Node(table)
 		// modify label
-		n.Label(table[0:len(table)/2] + "\n" + table[len(table)/2:])
+		n.Label(wrap(table))
 		return n, true
 	}
 	tn, ok := dg.FindNodeById(table)
 	if !ok {
 		n := dg.Node(table)
 		// modify label
-		n.Label(table[0:len(table)/2] + "\n" + table[len(table)/2:])
+		n.Label(wrap(table))
 		return n, true
 	}
 	return tn, false
+}
+
+func wrap(s string) string {
+	if len(s) < 24 {
+		return s
+	}
+	return s[0:len(s)/2] + "\n" + s[len(s)/2:]
 }
 
 // deduplicated

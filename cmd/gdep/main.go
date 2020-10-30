@@ -36,6 +36,10 @@ func newApp() *cli.App {
 			Name:  "v",
 			Usage: "verbose logging",
 		},
+		&cli.StringFlag{
+			Name:  "o",
+			Usage: "output file",
+		},
 	}
 	app.Commands = []*cli.Command{
 		{
