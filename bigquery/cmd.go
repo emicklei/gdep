@@ -35,6 +35,7 @@ func addDependencies(project string, dataset string, table string, root *dot.Gra
 	if _, ok := visited[key]; ok {
 		return nil
 	}
+	log.Println("reading definition of ", key)
 	visited[key] = true
 	fromNode, _ := ensureTableNode(root, project, dataset, table)
 	ctx := context.Background()
