@@ -2,6 +2,8 @@
 
 Tool for exploring dependencies between resources on the Google Cloud Platform
 
+# This repo is archived, please use https://github.com/emicklei/gcloudx instead.
+
 ## bigquery
 
     gdep -o g.dot bigquery PROJECT:DATASET.VIEW1 PROJECT.DATASET.VIEW2 && cat g.dot | dot -Tpng > gdep-bigquery.png && open gdep-bigquery.png
